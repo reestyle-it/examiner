@@ -3,8 +3,11 @@
     {
       "email": "info@reestyle.net",
       "name": "R. den Heijer",
-      "role": "Developer"
+      "role": "Developer",
     }
+  ],
+  "license": [
+    "GPL-3.0-only"
   ],
   "config": {
     "platform": {
