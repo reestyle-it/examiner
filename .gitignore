@@ -1,0 +1,4 @@
+!.gitignore
+.idea/
+.phpunit.result.cache
+vendor/

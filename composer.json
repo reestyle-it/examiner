@@ -1,0 +1,32 @@
+{
+  "authors": [
+    {
+      "email": "info@reestyle.net",
+      "name": "R. den Heijer",
+      "role": "Developer"
+    }
+  ],
+  "config": {
+    "platform": {
+      "php": "^8.1"
+    }
+  },
+  "name": "reestyle-it/examiner",
+  "description": "Lets you examine variables or classes and perform actions based on type",
+  "autoload": {
+    "classmap": [
+      "src/"
+    ],
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Test\\": "tests/"
+    }
+  },
+  "require": {
+    "phpunit/phpunit": "^10"
+  }
+}
