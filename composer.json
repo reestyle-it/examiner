@@ -9,11 +9,6 @@
   "license": [
     "GPL-3.0-only"
   ],
-  "config": {
-    "platform": {
-      "php": ">=8.1"
-    }
-  },
   "name": "reestyle-it/examiner",
   "description": "Lets you examine variables or classes and perform actions based on type",
   "autoload": {
@@ -30,6 +25,7 @@
     }
   },
   "require": {
-    "phpunit/phpunit": "^10"
+    "phpunit/phpunit": "^10",
+    "php": "^8.1"
   }
 }
