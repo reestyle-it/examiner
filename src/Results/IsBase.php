@@ -13,12 +13,12 @@ use Examiner\Exceptions\MethodNotFoundException;
  * @method bool isObject()
  * @method bool isString()
  *
- * @method bool whenArray(\Closure $closure, bool|\Closure $default = null)
- * @method bool whenBoolean(\Closure $closure, bool|\Closure $default = null)
- * @method bool whenFloat(\Closure $closure, bool|\Closure $default = null)
- * @method bool whenInt(\Closure $closure, bool|\Closure $default = null)
- * @method bool whenObject(\Closure $closure, bool|\Closure $default = null)
- * @method bool whenString(\Closure $closure, bool|\Closure $default = null)
+ * @method mixed whenArray(\Closure $closure, bool|\Closure $default = null)
+ * @method mixed whenBoolean(\Closure $closure, bool|\Closure $default = null)
+ * @method mixed whenFloat(\Closure $closure, bool|\Closure $default = null)
+ * @method mixed whenInt(\Closure $closure, bool|\Closure $default = null)
+ * @method mixed whenObject(\Closure $closure, bool|\Closure $default = null)
+ * @method mixed whenString(\Closure $closure, bool|\Closure $default = null)
  */
 abstract class IsBase
 {
