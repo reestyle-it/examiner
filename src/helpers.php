@@ -1,11 +1,11 @@
 <?php
 
-use Examiner\Results\{IsBase, IsBoolean};
+use Examiner\Results\{IsBase, IsBoolean, IsString, IsArray, IsInt, IsFloat, IsObject};
 
 if (!function_exists('examine')) {
     /**
      * @param $thing
-     * @return IsBase|IsBoolean
+     * @return IsBase|IsBoolean|IsString|IsArray|IsInt|IsFloat|IsObject
      */
     function examine($thing): IsBase
     {

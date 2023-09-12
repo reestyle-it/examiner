@@ -3,7 +3,9 @@
 namespace Examiner\Results;
 
 use Examiner\Enums\Datatype;
+use Examiner\Exceptions\InvalidTypeException;
 use Examiner\Exceptions\MethodNotFoundException;
+use http\Exception\InvalidArgumentException;
 
 /**
  * @method bool isArray()
@@ -23,28 +25,15 @@ use Examiner\Exceptions\MethodNotFoundException;
 abstract class IsBase
 {
 
+    public readonly array $validTypes;
+
     protected Datatype $is = Datatype::UNSET;
 
     public function __construct(
         public mixed $thing = null
     )
     {
-        // empty
-    }
-
-    public function type(): Datatype
-    {
-        return $this->is;
-    }
-
-    public function is(Datatype $is)
-    {
-        return $this->is === $is;
-    }
-
-    public function __call($var, $args)
-    {
-        $is = [
+        $this->validTypes = [
             Datatype::ARRAY->value,
             Datatype::BOOLEAN->value,
             Datatype::FLOAT->value,
@@ -52,6 +41,27 @@ abstract class IsBase
             Datatype::OBJECT->value,
             Datatype::STRING->value,
         ];
+    }
+
+    public function type(): Datatype
+    {
+        return $this->is;
+    }
+
+    /**
+     * @throws InvalidTypeException
+     */
+    public function is(Datatype $is)
+    {
+        return in_array($is, $this->validTypes) ? $this->type() === $is : throw new InvalidTypeException($is->value);
+    }
+
+    /**
+     * @throws MethodNotFoundException
+     */
+    public function __call($var, $args)
+    {
+        $types = $this->validTypes;
 
         $matches = [];
         preg_match('/^(?<startsWith>is|when)(?<type>[A-Z].+)$/', $var, $matches);
@@ -59,24 +69,49 @@ abstract class IsBase
         $type = strtolower($matches['type']);
 
         // isArray(), isString(), etc...
-        if ($startsWith === 'is' && in_array($type, $is)) {
-            return $this->type()->value === $type;
+        if ($startsWith === 'is' && in_array($type, $types)) {
+            return $this->handleIs($type);
         }
 
         // isArray(), isString(), etc...
-        if ($startsWith === 'when' && in_array($type, $is)) {
-            $callBack = reset($args);
-            $default = next($args);
-
-
-            if (is_callable($callBack)) {
-                return $this->type()->value === $type
-                    && $callBack($this->thing);
-            } else {
-                return is_callable($default) ? $default($this->thing) : $default;
-            }
+        if ($startsWith === 'when' && in_array($type, $types)) {
+            return $this->handleWhen($type, $args);
         }
 
-        throw new MethodNotFoundException();
+        throw new MethodNotFoundException($var);
+    }
+
+    private function handleIs($type): bool
+    {
+        return $this->is($type);
+    }
+
+    private function handleWhen(string $type, array $args): mixed
+    {
+        $callable = reset($args);
+        $default = next($args);
+
+        $return = $default;
+        if ($this->type()->value === $type) {
+            if (is_callable($callable)) {
+                $return = $this->type()->value === $type
+                    && $callable($this->thing);
+            }
+        } else {
+            $return = is_callable($default) ? $default($this->thing) : $default;
+        }
+
+        return $return;
+    }
+
+    protected function returnAlternate(mixed $alternate): mixed
+    {
+        $return = $alternate;
+
+        if (is_callable($alternate)) {
+            $return = $alternate($this->thing);
+        }
+
+        return $return;
     }
 }

@@ -3,13 +3,19 @@
 namespace Test\Unit;
 
 use Examiner\Enums\Datatype;
+use Examiner\Exceptions\InvalidTypeException;
 use Examiner\Exceptions\MethodNotFoundException;
+use ReflectionException;
 use Test\Assets\SomeObject;
 use Test\Test;
 
 class ExaminerTest extends Test
 {
 
+    /**
+     * @throws ReflectionException
+     * @throws InvalidTypeException
+     */
     public function testExamine()
     {
         $object = new SomeObject();
@@ -19,6 +25,19 @@ class ExaminerTest extends Test
         $this->assertTrue(examine(1.01)->whenFloat(fn () => true));
         $this->assertTrue(examine('1234')->whenString(fn () => true));
         $this->assertTrue(examine([1,2,3,4])->whenArray(fn () => true));
+
+        $this->expectException(MethodNotFoundException::class);
+        examine(123)->isWhack();
+
+        // When NOT expected type, default to regular datatype
+        $this->assertEquals(1234, examine(1234)->whenArray(fn () => true, 1234));
+        // When NOT expected type, default to outcome callable
+        $this->assertEquals(1234, examine(1234)->whenArray(fn () => true, fn() => 1234));
+
+        $this->assertTrue(examine('12345')->endsWith('45', fn () => true));
+
+        $this->expectException(MethodNotFoundException::class);
+        $this->assertTrue(examine(123)->endsWith('123', fn () => true));
 
         $this->assertTrue(examine($object)->isObject());
         $this->assertTrue(examine($object)->is(Datatype::OBJECT));

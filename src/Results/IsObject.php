@@ -67,11 +67,14 @@ class IsObject extends IsBase
         $reference = $this->getReference();
 
         if (!isset(static::$references[$reference][$putIn])) {
-            $reflectionMethods = (new ReflectionClass($this->thing))->getMethods($filter);
             $methods = [];
-            each($reflectionMethods, function (ReflectionMethod $val) use (&$methods) {
-                $methods[] = $val->getName();
-            });
+            try {
+                $reflectionMethods = (new ReflectionClass($this->thing))->getMethods($filter);
+                each($reflectionMethods, function (ReflectionMethod $val) use (&$methods) {
+                    $methods[] = $val->getName();
+                });
+            } catch (ReflectionException $exception) { }
+
             static::$references[$reference][$putIn] = $methods;
         }
 
