@@ -5,6 +5,8 @@ namespace Test\Assets;
 class SomeObject
 {
 
+    use SomeObjectTrait;
+
     public string $publicString = 'asdf';
     public bool $publicBool = true;
     public int $publicInt = 99;

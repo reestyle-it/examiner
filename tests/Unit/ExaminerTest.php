@@ -7,6 +7,8 @@ use Examiner\Exceptions\InvalidTypeException;
 use Examiner\Exceptions\MethodNotFoundException;
 use ReflectionException;
 use Test\Assets\SomeObject;
+use Test\Assets\SomeObjectBase;
+use Test\Assets\SomeObjectTrait;
 use Test\Test;
 
 class ExaminerTest extends Test
@@ -41,7 +43,9 @@ class ExaminerTest extends Test
 
         $this->assertTrue(examine($object)->isObject());
         $this->assertTrue(examine($object)->is(Datatype::OBJECT));
+        $this->assertTrue(examine($object)->hasTrait(SomeObjectTrait::class));
         $this->assertTrue(examine($object)->instanceOf(SomeObject::class));
+        $this->assertTrue(examine($object)->instanceOf(SomeObjectBase::class));
         $this->assertTrue(examine($object)->hasMethod('publicStaticFunction'));
         $this->assertTrue(examine($object)->hasProperty('publicArray'));
 
