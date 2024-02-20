@@ -27,6 +27,8 @@ abstract class IsBase
 
     public readonly array $validTypes;
 
+    protected $ignoreType = false;
+
     protected Datatype $is = Datatype::UNSET;
 
     public function __construct(
@@ -34,13 +36,20 @@ abstract class IsBase
     )
     {
         $this->validTypes = [
-            Datatype::ARRAY->value,
-            Datatype::BOOLEAN->value,
-            Datatype::FLOAT->value,
-            Datatype::INT->value,
-            Datatype::OBJECT->value,
-            Datatype::STRING->value,
+            Datatype::ARRAY,
+            Datatype::BOOLEAN,
+            Datatype::FLOAT,
+            Datatype::INT,
+            Datatype::OBJECT,
+            Datatype::STRING,
         ];
+    }
+
+    public function ignoreType(): self
+    {
+        $this->ignoreType = true;
+
+        return $this;
     }
 
     public function type(): Datatype
@@ -58,30 +67,48 @@ abstract class IsBase
 
     /**
      * @throws MethodNotFoundException
+     * @throws InvalidTypeException
      */
     public function __call($var, $args)
     {
-        $types = $this->validTypes;
+        static $types = [];
+
+        if (count($types) === 0) {
+            each($this->validTypes, function (Datatype $val) use (&$types) {
+                $types[] = $val->value;
+            });
+        }
 
         $matches = [];
-        preg_match('/^(?<startsWith>is|when)(?<type>[A-Z].+)$/', $var, $matches);
-        $startsWith = $matches['startsWith'];
+        preg_match('/^(?<startsWith>is|when)(?<type>(' . implode('|', $types) . '))$/i', $var, $matches);
         $type = strtolower($matches['type']);
+        $startsWith = $matches['startsWith'];
+
+        $typeExists = in_array($type, $types);
 
         // isArray(), isString(), etc...
-        if ($startsWith === 'is' && in_array($type, $types)) {
+        if ($startsWith === 'is' && $typeExists) {
+            $type = Datatype::from($type);
+
             return $this->handleIs($type);
         }
 
         // isArray(), isString(), etc...
-        if ($startsWith === 'when' && in_array($type, $types)) {
+        if ($startsWith === 'when' && $typeExists) {
             return $this->handleWhen($type, $args);
         }
 
-        throw new MethodNotFoundException($var);
+        if (! $this->ignoreType) {
+            throw new MethodNotFoundException($var);
+        }
+
+        return null;
     }
 
-    private function handleIs($type): bool
+    /**
+     * @throws InvalidTypeException
+     */
+    private function handleIs(Datatype $type): bool
     {
         return $this->is($type);
     }

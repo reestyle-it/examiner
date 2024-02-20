@@ -36,7 +36,7 @@ class IsObject extends IsBase
             static::$references[$reference]['traits'] = $traits;
         }
 
-        return examine(static::$references[$reference]['traits'])->has($trait);
+        return examine(static::$references[$reference]['traits'])->hasValue($trait);
     }
 
     public function hasProperty(string $property): bool

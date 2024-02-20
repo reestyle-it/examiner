@@ -11,12 +11,11 @@ PUBLIC members. Trying to access private or protected members from outside an ob
 Examine if the provided `thing` is of given type and then call the argument given. If it's not 
 of given type, either null will be returned or the given closure will be executed.
 
-You can also surround it in a conditional block, but because it's already conditional, 
-that's rarely useful.
-
-Example:
+Examples:
+## When
 ```
-examine(true)->whenBoolean(
+$bool = true;
+examine($bool)->whenBoolean(
     fn () => true,   // True block 
     fn () => false   // False block
 );
@@ -34,9 +33,34 @@ examine($var)->hasProperty('objectProperty');
 ## Datatypes
 ### Booleans
 ```
-examine(true)->isTrue(); // true
+$bool = true;
+examine($bool)->isTrue(); // true
+examine($bool)->isFalse(); // false (duh)
+examine($bool)->isEmpty(); // MethodNotFoundException
+examine($bool)->ignoreType()->isEmpty(); // null
+```
+
+### Strings
+```
 examine(' ')->couldBeTrue(); // true
 examine('')->couldBeTrue(); // false
+examine(0)->couldBeTrue(); // false
+examine(0)->couldBeFalse(); // true
+examine(' ')->isEmpty(); // false
+examine('')->isEmpty(); // true
+examine(null)->isEmpty(); // MethodNotFoundException
+examine(0)->couldBeTrue(); // false
+examine(0)->couldBeFalse(); // true
+```
+
+### Integers & floats
+```
+examine(1)->isInt(); // true
+examine(1)->isFloat(); // false
+examine(1.0)->isFloat(); // true
+examine(1.0)->isInt(); // false
 examine(1)->isTrue(); // false
 examine(1)->couldBeTrue(); // true
+
+examine(1.0)->whenFloat(fn () => 13.45);
 ```

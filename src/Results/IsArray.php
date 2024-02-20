@@ -3,9 +3,8 @@
 namespace Examiner\Results;
 
 use Examiner\Enums\Datatype;
-use Examiner\Results\IsInt;
 
-class IsArray extends IsInt
+class IsArray extends IsBase
 {
 
     protected Datatype $is = Datatype::ARRAY;
@@ -20,12 +19,12 @@ class IsArray extends IsInt
         return count($this->thing) === 0;
     }
 
-    public function hasValue(mixed $value, bool $strict = false)
+    public function hasValue(mixed $value, bool $strict = false): bool
     {
         return array_search($value, $this->thing, $strict) !== false;
     }
 
-    public function hasKey(int|string $key)
+    public function hasKey(int|string $key): bool
     {
         return array_key_exists($key, $this->thing);
     }
