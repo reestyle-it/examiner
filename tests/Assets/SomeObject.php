@@ -2,10 +2,8 @@
 
 namespace Test\Assets;
 
-class SomeObject
+class SomeObject extends SomeObjectBase
 {
-
-    use SomeObjectTrait;
 
     public string $publicString = 'asdf';
     public bool $publicBool = true;

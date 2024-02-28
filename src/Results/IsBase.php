@@ -141,4 +141,9 @@ abstract class IsBase
 
         return $return;
     }
+
+    protected function __doCall(bool $test, Callable $whenTrue, Callable $whenFalse): mixed
+    {
+        return call_user_func($test ? $whenTrue : $whenFalse);
+    }
 }

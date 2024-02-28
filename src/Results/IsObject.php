@@ -85,4 +85,32 @@ class IsObject extends IsBase
     {
         return spl_object_hash($this->thing);
     }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function whenHasProperty(string $property, Callable $whenTrue, Callable $whenFalse): mixed
+    {
+        return $this->__doCall($this->hasProperty($property), $whenTrue, $whenFalse);
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function whenHasTrait(string $trait, Callable $whenTrue, Callable $whenFalse): mixed
+    {
+        return $this->__doCall($this->hasMethod($trait), $whenTrue, $whenFalse);
+    }
+
+    /**
+     * @param string $method Applies to all methods, encapsulation is ignored
+     * @param callable $whenTrue
+     * @param callable $whenFalse
+     * @return mixed
+     * @throws ReflectionException
+     */
+    public function whenHasMethod(string $method, Callable $whenTrue, Callable $whenFalse): mixed
+    {
+        return $this->__doCall($this->hasMethod($method), $whenTrue, $whenFalse);
+    }
 }

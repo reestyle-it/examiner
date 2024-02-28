@@ -6,5 +6,7 @@ use Examiner\Enums\Datatype;
 
 class IsNothing extends IsBase
 {
-protected Datatype $is = Datatype::NOTHING;
+
+    protected Datatype $is = Datatype::NOTHING;
+    
 }

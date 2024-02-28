@@ -28,4 +28,9 @@ class IsBoolean extends IsBase
     {
         return $this->thing == false || $this->thing == 0 || empty($this->thing) || $this->thing === null;
     }
+
+    public function whenTrue(Callable $whenTrue, Callable $whenFalse)
+    {
+        return $this->__doCall($this->isTrue(), $whenTrue, $whenFalse);
+    }
 }
